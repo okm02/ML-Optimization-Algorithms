@@ -1,14 +1,14 @@
 import numpy as np
-from loss import *
-from firstOrder import First_Order_Optimizer
+from .loss import *
+from .firstOrder import First_Order_Optimizer
 
 class Second_Order_Optimizer:
 
-	def __init__(learning_rate,epsilon):
+	def __init__(self,learning_rate,epsilon,max_iters):
 
 		self.gamma = learning_rate
 		self.epsilon = epsilon
-
+		self.max_iters = max_iters
 
 	def newtons_method(self,A,b):
 
@@ -17,8 +17,8 @@ class Second_Order_Optimizer:
 		 Then switch to newton's method and use it's super log convergence rate to reach optimum
 		'''
 
-		full_gd = First_Order_Optimizer(A.shape[0],self.learning_rate,self.epsilon)
-		weights,losses = full_gd.mini_batch_stochastic_gradient_descent(A,b)
+		full_gd = First_Order_Optimizer(A.shape[0],self.gamma,self.epsilon,None,self.max_iters)
+		weight,losses = full_gd.mini_batch_stochastic_gradient_descent(A,b)
 
 		gradient = first_order_least_squares(A,weight,b)
 		hessian = second_order_least_squares(A,weight,b)
